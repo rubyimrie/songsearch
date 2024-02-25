@@ -3,19 +3,6 @@
 {% block title %}Search App{% endblock %}
 
 {% block content %}
-<<<<<<< HEAD
-    <div class="container">
-        <div class="search-box">
-            <h1>Songle</h1>
-            <form method="post" action="{{ url_for('search_results') }}">
-                <input type="text" name="search_query" placeholder="Enter your search">
-                <button type="submit">Search</button>
-            </form>
-            {% if search_query %}
-                <p>You searched for: <strong>{{ search_query }}</strong></p>
-            {% endif %}
-        </div>
-=======
     <div class="search-box">
         <p class="text-7xl text-indigo-700 mb-6 font-semibold">Songle</p>
 
@@ -26,6 +13,5 @@
         {% if search_query %}
             <p>You searched for: <strong>{{ search_query }}</strong></p>
         {% endif %}
->>>>>>> main
     </div>
 {% endblock %}
