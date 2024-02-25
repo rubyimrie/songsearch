@@ -1,12 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Profile</title>
-    <link href="{{url_for('static',filename='css/main.css')}}" rel="stylesheet">
-</head>
-</head>
-<body>
-    <h2>Welcome, {{ username }}!</h2>
-    <p>Here are your playlists</p>
-</body>
-</html>
+{% extends 'layout.html' %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Hello, {{ username }}</h1>
+    <h2>Your Playlists:</h2>
+    <ul>
+        {% for playlist in playlists %}
+            <li>{{ playlist }}</li>
+        {% endfor %}
+    </ul>
+    
+    <h2>Create a New Playlist:</h2>
+    <form action="{{ url_for('create_playlist') }}" method="post">
+        <label for="playlist_name">Playlist Name:</label>
+        <input type="text" id="playlist_name" name="playlist_name" required>
+        <button type="submit">Create Playlist</button>
+    </form>
+</div>
+{% endblock %}

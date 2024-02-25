@@ -82,7 +82,11 @@
 </head>
 <body class="flex h-screen bg-sky-100">
     <header class="bg-indigo-700">
-        <a href="{{ url_for('login') }}">Log In</a>
+        {% if g.user %}
+            <a href="{{ url_for('profile', username=g.user) }}">My Profile</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Log In</a>
+        {% endif %}
         <a href="#">Playlists</a>
     </header>
 
