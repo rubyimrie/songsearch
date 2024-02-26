@@ -12,6 +12,21 @@
         </form>
         {% if search_query %}
             <p>You searched for: <strong>{{ search_query }}</strong></p>
+            {% for result in search_results %}
+                <div class="result-box">
+                    <div class="result">
+                        <img src="{{ result.image }}" alt="Song Image">
+                        <div class="result-details">
+                            <h3>{{ result.song_name }}</h3>
+                            <p>Artist: {{ result.artist }}</p>
+                            <p>{{ result.lyric_sentence }}</p>
+                        </div>
+                        <div class="save-button">
+                            <img src="https://cdn0.iconfinder.com/data/icons/social-media-logo-4/32/Social_Media_instagram_save_save_instagram-512.png" alt="save button" width="20" height="20">
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         {% endif %}
     </div>
 {% endblock %}

@@ -30,14 +30,54 @@
             text-decoration: none;
             margin: 0 10px;
         }
+        .search-container {
+            display: flex;
+            height: 100vh;
+        }
+
         .container {
             max-width: 800px;
             margin: 20px auto;
-            padding: 35vh 20px 35vh 20px;
+            padding:  20px 20px;
             width: 100%;
             box-sizing: border-box;
-            text-align: center; /* Added this line to center the content */
+            align-items: center; /* Center vertically */
         }
+
+        .search-results-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px; 
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .result-box {
+            border: 1px solid #ccc;
+            padding: 5px;
+            display: flex;
+        }
+        .result {
+            display: flex;
+            flex-grow: 1;
+        }
+
+        .result img {
+            width: 100px; /* Adjust as needed */
+            height: 100px; /* Adjust as needed */
+            margin-right: 20px;
+        }
+
+        .result-details {
+            flex-grow: 1;
+        }
+
+        .save-button img {
+            width: 20px; 
+            height: 20px;
+            margin-left: 20px;
+        }
+
     </style>
 </head>
 <body class="flex h-screen bg-sky-100">
@@ -47,7 +87,9 @@
     </header>
 
     <div class="container">
+        
         {% block content %}{% endblock %}
+        
     </div>
 </body>
 </html>
