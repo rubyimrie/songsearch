@@ -1,6 +1,6 @@
 from flask import Flask, url_for, request, render_template, redirect, url_for, session
 from markupsafe import escape
-from code_song_withAPI import get_ranked_queries
+from code_song_withAPI import get_ranked_queries, get_song
 
 
 app = Flask(__name__)
@@ -47,6 +47,14 @@ def index():
     # Render the index page template
     return render_template('search.html', search_query=search_query)
 
+@app.route('/song_details/<id>')
+def song_details(id):
+    # Call the function to get the details of the song by its ID
+    song = get_song(id)
+
+    
+    # Render the song details page template with the song details
+    return render_template('song_details.html', song=song)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

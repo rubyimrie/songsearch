@@ -17,7 +17,7 @@
                     <div class="result">
                         <!-- <img src="{{ result.image }}" alt="Song Image"> -->
                         <div class="result-details">
-                            <h3>{{ result.song_name }}</h3>
+                            <h3><a href="{{ url_for('song_details', id=result.id) }}" class="text-blue-500 underline hover:text-blue-700">{{ result.song_name }}</a></h3>
                             <p>Artist: {{ result.artist }}</p>
                             <!-- <p>{{ result.lyric_sentence }}</p> -->
                         </div>
