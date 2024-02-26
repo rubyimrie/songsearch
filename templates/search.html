@@ -17,7 +17,8 @@
                     <div class="result">
                         <!-- <img src="{{ result.image }}" alt="Song Image"> -->
                         <div class="result-details">
-                            <h3><a href="{{ url_for('song_details', id=result.id) }}" class="text-blue-500 underline hover:text-blue-700">{{ result.song_name }}</a></h3>
+                            <p><a href="{{ url_for('song_details', id=result.id) }}" style="color: #3b82f6; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#1d4ed8'" onmouseout="this.style.color='#3b82f6'">{{ result.song_name }}</a></p>
+
                             <p>Artist: {{ result.artist }}</p>
                             <!-- <p>{{ result.lyric_sentence }}</p> -->
                         </div>

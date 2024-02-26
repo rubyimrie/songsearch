@@ -22,7 +22,7 @@ use_hyphen = False
 
 #resource_folder = r"data"
 # Data file
-csv_name = r"data\labeled_lyrics_cleaned.csv"
+csv_name = r"data/labeled_lyrics_cleaned.csv"
 boolean_file_name = "queries.boolean.txt"
 ranked_file_name = "queries.ranked.txt"
 

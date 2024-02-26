@@ -50,9 +50,14 @@ def index():
 @app.route('/song_details/<id>')
 def song_details(id):
     # Call the function to get the details of the song by its ID
-    song = get_song(id)
+    song_details = get_song(id)
+    song={
+        'artist': song_details['artist'],
+        'id': song_details['id'],
+        'lyrics': song_details['lyrics'],
+        'title': song_details['title'],
 
-    
+    }
     # Render the song details page template with the song details
     return render_template('song_details.html', song=song)
 
