@@ -15,11 +15,12 @@
             {% for result in search_results %}
                 <div class="result-box">
                     <div class="result">
-                        <img src="{{ result.image }}" alt="Song Image">
+                        <!-- <img src="{{ result.image }}" alt="Song Image"> -->
                         <div class="result-details">
-                            <h3>{{ result.song_name }}</h3>
+                            <p><a href="{{ url_for('song_details', id=result.id) }}" style="color: #3b82f6; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#1d4ed8'" onmouseout="this.style.color='#3b82f6'">{{ result.song_name }}</a></p>
+
                             <p>Artist: {{ result.artist }}</p>
-                            <p>{{ result.lyric_sentence }}</p>
+                            <!-- <p>{{ result.lyric_sentence }}</p> -->
                         </div>
                         <div class="save-button">
                             <img src="https://cdn0.iconfinder.com/data/icons/social-media-logo-4/32/Social_Media_instagram_save_save_instagram-512.png" alt="save button" width="20" height="20">

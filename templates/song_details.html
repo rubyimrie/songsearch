@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+{% block title %}Song Details{% endblock %}
+
+{% block content %}
+    <div class="song-details">
+        <h2 >{{ song.title }}</h2>
+        <h3 >{{ song.artist }}</h3>
+        <div class="lyrics">
+            <!-- Use pre tag to preserve line breaks in lyrics -->
+            <pre>{{ song.lyrics }}</pre>
+        </div>
+    </div>
+
+    <style>
+        /* CSS for song-details page */
+
+        .song-details {
+            max-width: 800px; /* Adjust as needed */
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .song-details h2 {
+            font-size: 1.7rem; /* Adjust font size */
+            font-weight: 500;
+        }
+
+        .song-details h3 {
+            font-size: 1.4rem; /* Adjust font size */
+            font-weight: 500;
+            color: #4a5568; /* Text color */
+            margin-top: 1rem; /* Adjust spacing */
+        }
+
+        .lyrics {
+            margin-top: 1.5rem; /* Adjust spacing */
+        }
+
+        .lyrics pre {
+            white-space: pre-wrap; /* Preserve line breaks */
+            font-family: 'Courier New', Courier, monospace; /* Optional: Adjust font family */
+            font-size: 1rem; /* Adjust font size */
+            line-height: 1.5; /* Adjust line height */
+            color: #4a5568; /* Text color */
+        }
+
+    </style>
+{% endblock %}
+
