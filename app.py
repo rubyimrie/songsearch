@@ -30,7 +30,7 @@ def index():
 
         # Make a GET request to the API endpoint for searching
         api_url = 'http://34.82.129.217:5000/ranked'
-        params = {'query': search_query, 'page': 2, 'filter': '', 'ranking': '1', 'show': 0}  # Adjust parameters as needed
+        params = {'query': search_query, 'page': 1, 'filter': '', 'ranking': '1', 'show': 0}  # Adjust parameters as needed
         response = requests.get(api_url, params=params)
         
         if response.status_code == 200:
