@@ -4,6 +4,9 @@ import requests
 
 
 app = Flask(__name__)
+secret_key = "my_secret_key_here"
+
+
 users = {
     'user1': 'password1',
     'user2': 'password2',
@@ -74,18 +77,26 @@ def song_details(id):
         # Handle error response
         return render_template('error.html', error='An error occurred while retrieving song details.')
 
+import requests
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username in users and users[username] == password:
-            # Set the user in the session upon successful login
-            session['user'] = username
-            playlists = mock_playlists.get(username, [])
-            return redirect(url_for('profile', username=username, playlists=playlists))
+        
+        # Make a request to the API for authentication
+        api_url = 'http://34.82.129.217:5000/login'
+        data = {'email': username, 'password': password}
+        response = requests.post(api_url, json=data)
+        
+        if response.status_code == 200:
+            # Authentication successful
+            user_data = response.json()
+            return render_template('login.html', error="Successful")
+        
         else:
+            # Authentication failed
             return render_template('login.html', error="Invalid username or password")
         
     return render_template('login.html')
