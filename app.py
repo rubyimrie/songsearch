@@ -1,6 +1,6 @@
 from flask import Flask, url_for, request, render_template, redirect, url_for, session
 from markupsafe import escape
-from code_song_withAPI import get_ranked_queries, get_song
+import requests
 
 
 app = Flask(__name__)
@@ -16,50 +16,59 @@ mock_playlists = {
         }
 
 
+import requests
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     search_query = None
+    search_results = []
+    error_message = None
 
     if request.method == 'POST':
         # Retrieve the search query from the form
         search_query = request.form.get('search_query')
 
-        # Call the function to get ranked queries
-        ranked_results, total_results = get_ranked_queries(search_query, '', 1, '1')
-
-        if ranked_results is None:
-            # Handle case where no results are found
-            search_results = []
-            error_message = 'No results found for the query: {}'.format(search_query)
+        # Make a GET request to the API endpoint for searching
+        api_url = 'http://34.82.129.217:5000/ranked'
+        params = {'query': search_query, 'page': 1, 'filter': '', 'ranking': '1', 'show': 0}  # Adjust parameters as needed
+        response = requests.get(api_url, params=params)
+        
+        if response.status_code == 200:
+            # Parse the JSON response
+            ranked_results = response.json()
+            
+            if ranked_results:
+                # Format the search results for display
+                for result in ranked_results:
+                    search_results.append({
+                        'song_name': result['title'],
+                        'artist': result['artist'],
+                        'id': result['id']
+                    })
+            else:
+                error_message = f'No results found for the query: {search_query}'
         else:
-            # Format the search results for display
-            search_results = []
-            for result in ranked_results:
-                search_results.append({
-                    'song_name': result['title'],
-                    'artist': result['artist'],
-                    'id': result['id']
-                })
-            error_message = None
-
-        return render_template('search.html', search_query=search_query, search_results=search_results, error=error_message)
+            # Handle error response
+            error_message = f'Error: {response.status_code} - An error occurred while searching.'
 
     # Render the index page template
-    return render_template('search.html', search_query=search_query)
+    return render_template('search.html', search_query=search_query, search_results=search_results, error=error_message)
+
+
 
 @app.route('/song_details/<id>')
 def song_details(id):
-    # Call the function to get the details of the song by its ID
-    song_details = get_song(id)
-    song={
-        'artist': song_details['artist'],
-        'id': song_details['id'],
-        'lyrics': song_details['lyrics'],
-        'title': song_details['title'],
-
-    }
-    # Render the song details page template with the song details
-    return render_template('song_details.html', song=song)
+    # Make a GET request to the API endpoint for retrieving song details
+    api_url = f'http://34.82.129.217:5000/song_by_id?id={id}'
+    response = requests.get(api_url)
+    
+    if response.status_code == 200:
+        # Parse the JSON response
+        song_details = response.json()
+        return render_template('song_details.html', song=song_details)
+    else:
+        # Handle error response
+        return render_template('error.html', error='An error occurred while retrieving song details.')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -77,17 +86,7 @@ def login():
         
     return render_template('login.html')
 
-@app.route('/search_results', methods=['POST'])
-def search_results():
-    search_query = request.form.get('search_query')
-    # For simplicity, let's assume you have a list of search results
-    # Replace this with your actual search logic
-    search_results = [
-        {"image": "https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36", "song_name": "Blinding Lights", "artist": "The Weeknd", "lyric_sentence": "Lyric sentence 1"},
-        {"image": "https://i1.sndcdn.com/artworks-5VCxiNQdKysNTV2y-Qu5QwQ-t500x500.jpg", "song_name": "Someone you loved", "artist": "Lewis Capaldi", "lyric_sentence": "Lyric sentence 2"},
-        {"image": "https://upload.wikimedia.org/wikipedia/en/b/b0/SoftCellTaintedLove7InchSingleCover.jpg", "song_name": "Tainted Love", "artist": "Soft Cell", "lyric_sentence": "Lyric sentence 3"}
-    ]
-    return render_template('search_results.html', search_query=search_query, search_results=search_results)
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -129,23 +128,7 @@ def profile():
         # If user is not logged in, redirect to login page
         return redirect(url_for('login'))
     
-@app.route('/create_playlist', methods=['POST'])
-def create_playlist():
-    # Check if user is logged in
-    if 'user' in session:
-        playlist_name = request.form.get('playlist_name')
-        # Add code to save the new playlist to the database or wherever you store playlists
-        # For example:
-        # playlist = Playlist(name=playlist_name, user_id=session['user'])
-        # db.session.add(playlist)
-        # db.session.commit()
-        # Assuming you're using SQLAlchemy and have a Playlist model
-        
-        # Redirect the user back to their profile page after creating the playlist
-        return redirect(url_for('profile'))
-    else:
-        # If user is not logged in, redirect to login page
-        return redirect(url_for('login'))
+
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
