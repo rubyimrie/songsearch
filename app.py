@@ -30,12 +30,14 @@ def index():
 
         # Make a GET request to the API endpoint for searching
         api_url = 'http://34.82.129.217:5000/ranked'
-        params = {'query': search_query, 'page': 1, 'filter': '', 'ranking': '1', 'show': 0}  # Adjust parameters as needed
+        params = {'query': search_query, 'page': 2, 'filter': '', 'ranking': '1', 'show': 0}  # Adjust parameters as needed
         response = requests.get(api_url, params=params)
         
         if response.status_code == 200:
             # Parse the JSON response
-            ranked_results = response.json()
+            data = response.json()
+            ranked_results = data[0]  # Extract the list of search results
+            total_results = data[1]   # Extract the total number of results
             
             if ranked_results:
                 # Format the search results for display
@@ -43,7 +45,9 @@ def index():
                     search_results.append({
                         'song_name': result['title'],
                         'artist': result['artist'],
-                        'id': result['id']
+                        'id': result['id'],
+                        'album': result['album'],
+                        'released_year': result['released_year']
                     })
             else:
                 error_message = f'No results found for the query: {search_query}'
