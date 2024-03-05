@@ -84,10 +84,23 @@
     </style>
 </head>
 <body class="flex h-screen bg-sky-100">
-    <header class="bg-indigo-700">
-        <a href="{{ url_for('login') }}">Log In</a>
-        <a href="#">Playlists</a>
+    <header style="display: flex; justify-content: space-between; align-items: center;" class="bg-indigo-700">
+        <div>
+            <a href="{{ url_for('login') }}">Log In</a>
+        </div>
+        <div>
+            <a href="{{ url_for('index') }}">Songle</a>
+        </div>
+        <div>
+            <a href="{{ url_for('profile') }}">Liked Songs</a>
+            <form method="post" action="{{ url_for('logout') }}" style="display: inline-block;">
+                <button type="submit" style="background-color: #4F46E5; border: none; cursor: pointer;">
+                    <img src="https://icon2.cleanpng.com/20180704/fz/kisspng-computer-icons-download-logout-5b3c74d5dc14f1.2240563015306887259015.jpg" alt="logout" width="20" height="20">
+                </button>
+            </form>
+        </div>
     </header>
+    
 
     <div class="container">
         

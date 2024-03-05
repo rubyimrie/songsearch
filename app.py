@@ -76,62 +76,120 @@ def song_details(id):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
+    error_message = None
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
-        if username in users and users[username] == password:
-            # Set the user in the session upon successful login
-            session['user'] = username
-            playlists = mock_playlists.get(username, [])
-            return redirect(url_for('profile', username=username, playlists=playlists))
-        else:
-            return render_template('login.html', error="Invalid username or password")
-        
-    return render_template('login.html')
 
+        # Make a GET request to the API endpoint for searching
+        api_url = 'http://34.82.129.217:5000/login'
+        params = {'email': email, 'password': password}  
+        response = requests.get(api_url, params=params)
+
+        if response.status_code == 400:
+            error_message = f'Email or password is missing'
+        elif response.status_code == 401:
+            error_message = f'User already exists'
+        elif response.status_code == 200:
+            error_message = f'successful'
+            return redirect(url_for('profile', email=email))
+        else: 
+            error_message = f'An error occurred'
+    return render_template('login.html', error=error_message)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    error_message = None
+
     if request.method == 'POST':
-        username = request.form['username']
+        name = request.form['name']
+        email = request.form['email']
         password = request.form['password']
-        if username in users:
-            return render_template('signup.html', error="Username already exists")
-        else:
-            users[username] = password
+
+        # Make a POST request to the API endpoint for signing up
+        api_url = 'http://34.82.129.217:5000/signup'
+        data = {'name': name, 'email': email, 'password': password}  
+        response = requests.post(api_url, json=data)
+        
+        if response.status_code == 400:
+            error_message = f'Email or password is missing'
+        elif response.status_code == 409:
+            error_message = f'User already exists'
+        elif response.status_code == 200:
+            # User signup was successful
             return redirect(url_for('login'))
-    return render_template('signup.html')
+            # error_message = f'Success'
+        else:
+            error_message = f'An error occurred'
+
+    return render_template('signup.html', error=error_message)
 
 # Logout route
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def logout():
-    # Remove user session
-    session.pop('user', None)
-    return redirect(url_for('login'))
+    # Make a POST request to the API endpoint for logout
+    api_url = 'http://34.82.129.217:5000/logout'
+    response = requests.post(api_url)
+    
+    # Check the response status code
+    if response.status_code == 200:
+        error_message = 'Logout successful'
+    else:
+        error_message = 'An error occurred'
+
+    # Redirect to the login page with an error message
+    return redirect(url_for('login'), error=error_message)
 
 @app.route('/profile')
 def profile():
     # Check if user is logged in
     if 'user' in session:
-        username = session['user']
+        email = session['user']
         
-        # Mock playlists for each user
-        mock_playlists = {
-            'user1': ['Playlist 1', 'Playlist 2', 'Playlist 3'],
-            'user2': ['Playlist A', 'Playlist B'],
-            'user3': ['My Playlist', 'Favorites']
-        }
+        api_url = 'http://34.82.129.217:5000/LikedSongs'  
+        data = {'email': email}  
+        response = requests.get(api_url, json=data)
         
-        # Retrieve playlists for the current user
-        playlists = mock_playlists.get(username, [])
-        
-        return render_template('profile.html', username=username, playlists=playlists)
+        return render_template('profile.html', username=email, likedSongs=response.json()) 
     else:
         # If user is not logged in, redirect to login page
         return redirect(url_for('login'))
     
+@app.route('/saveSong', methods=['POST'])
+def saveSong():
+    # Get the song ID from the form
+    song_id = request.form['song_id']
+    email = request.form['email']
+        
+    # Make a POST request to the API endpoint
+    api_url = 'http://34.82.129.217:5000/Like'
+    data = {'user': email, 'Id': song_id}  
+    response = requests.post(api_url, json=data)
+    
+    if response.status_code == 200:
+        error_message = f'Song Liked Successfully!'
+    else:
+        error_message = f'An error occurred'
+
+
+@app.route('/deleteSong', methods=['POST'])
+def deleteSong():
+    # Get the song ID from the form
+    song_id = request.form['song_id']
+    email = request.form['email']
+        
+    # Make a POST request to the API endpoint 
+    api_url = 'http://34.82.129.217:5000/DeleteSong'
+    data = {'user': email, 'Id': song_id}  
+    response = requests.post(api_url, json=data)
+    
+    if response.status_code == 200:
+        error_message = f'Song Deleted Successfully!'
+    else:
+        error_message = f'An error occurred'
+
+    return redirect(url_for('profile'), error=error_message)
 
 
 if __name__ == "__main__":
