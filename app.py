@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, render_template, redirect, url_for, session
+from flask import Flask, url_for, request, render_template, redirect, url_for, session, flash
 from markupsafe import escape
 import requests
 
@@ -188,20 +188,21 @@ def saveSong():
 def deleteSong():
     # Get the song ID from the form
     song_id = request.form['song_id']
-    email = request.form['email']
-        
-    # Make a POST request to the API endpoint 
+    email = session['user']  # Retrieve user email from the session
+    
+    # Make a POST request to the API endpoint
     api_url = 'http://34.82.129.217:5000/DeleteSong'
-    data = {'user': email, 'Id': song_id}  
+    data = {'email': email, 'id': song_id}  # Prepare the JSON data
     response = requests.post(api_url, json=data)
     
     if response.status_code == 200:
-        error_message = f'Song Deleted Successfully!'
+        error_message='Song deleted successfully!'
     else:
-        error_message = f'An error occurred'
+        error_message='An error occurred while deleting the song.'
 
-    return redirect(url_for('profile'), error=error_message)
-
+    username = session.get('user')
+    likedSongs = requests.get('http://34.82.129.217:5000/LikedSongs', json={'email': email}).json()
+    return render_template('profile.html', username=username, likedSongs=likedSongs, error=error_message)
 
 if __name__ == "__main__":
     app.run(debug=True)
