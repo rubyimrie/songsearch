@@ -13,6 +13,7 @@ def index():
     search_type = 'ranked'
     search_results = []
     error_message = None
+    liked_song_ids = []
 
     if request.method == 'POST':
         # Retrieve the search query and type from the form
@@ -48,13 +49,8 @@ def index():
             # Handle error response
             error_message = f'Error: {response.status_code} - An error occurred while searching.'
 
-    # Retrieve liked song IDs
-    if 'user' in session:
-        liked_songs_response = requests.get('http://34.82.129.217:5000/LikedSongs', json={'email': session.get('user')})
-        liked_song_ids = [song['id'] for song in liked_songs_response.json()]
-    # Proceed with further processing using liked_song_ids
-    else:
-        liked_song_ids = []
+        # Retrieve liked song IDs
+    
         
     # Render the index page template
     return render_template('search.html', search_query=search_query, search_type=search_type, search_results=search_results, liked_song_ids=liked_song_ids, error=error_message)
@@ -142,11 +138,12 @@ def logout():
     # Check the response status code
     if response.status_code == 200:
         error_message = 'Logout successful'
+        session.pop('user', None)
     else:
         error_message = 'An error occurred'
 
     # Redirect to the login page with an error message
-    return redirect(url_for('login'), error=error_message)
+    return redirect(url_for('login'))
 
 @app.route('/profile')
 def profile():
