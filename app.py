@@ -24,9 +24,10 @@ def index():
             ranking = request.form.get('ranking')
             params = {'query': search_query, 'page': 1, 'filter': '', 'ranking': ranking, 'show': 0}  # Adjust common parameters as needed
             api_url = 'http://34.82.129.217:5000/ranked'
+            type = None
         elif search_type == 'simple':
             type = request.form.get('search_option')
-            params = {'query': search_query, 'page': 1, 'filter': '', 'type':type, 'show': 0}  # Adjust common parameters as needed
+            params = {'query': search_query, 'page': 1, 'filter': '', 'type':type, 'show': 0, 'proximity':2}  # Adjust common parameters as needed
             api_url = 'http://34.82.129.217:5000/search'
         
         # Make a GET request to the appropriate API endpoint
