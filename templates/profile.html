@@ -26,4 +26,11 @@ Profile
             </div>
         {% endfor %}
     </div>
+    {% if error %}
+    <script>
+        window.onload = function() {
+            alert('{{ error }}');
+        };
+    </script>
+    {% endif %}
 {% endblock %}

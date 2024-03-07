@@ -177,8 +177,11 @@ def saveSong():
     except requests.exceptions.RequestException as e:
         error_message = 'An error occurred during the request. Please try again later.'
 
-    # Redirect back to the profile page with an error message
-    return redirect(url_for('profile', error=error_message))
+    # Render the profile page template with an error message
+    username = session.get('user')
+    likedSongs = requests.get('http://34.82.129.217:5000/LikedSongs', json={'email': email}).json()
+    return render_template('profile.html', username=username, likedSongs=likedSongs, error=error_message)
+
 
 
 @app.route('/deleteSong', methods=['POST'])
