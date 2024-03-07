@@ -5,38 +5,54 @@
     <div class="song-details">
         <h2>{{ song.title }}</h2>
         <h3>{{ song.artist }}</h3>
-        <div class="album-info">
-            <p><strong>Album:</strong> {{ song.album }}</p>
-            <p><strong>Released Year:</strong> {{ song.released_year }}</p>
-            <img src="{{ song.album_img }}" alt="Album Image">
+        
+        <div class="info-container">
+            <!-- Column 1: Album Info -->
+            <div class="column">
+                <div class="album-info">
+                    <p><strong>Album:</strong> {{ song.album }}</p>
+                    <p><strong>Released Year:</strong> {{ song.released_year }}</p>
+                    <img src="{{ song.album_img }}" alt="Album Image">
+                </div>
+            </div>
+            
+            <!-- Column 2: Artist Info -->
+            <div class="column">
+                <div class="artist-info">
+                    <p><strong>Other Songs by {{ song.artist }}:</strong></p>
+                    <ul>
+                        {% for other_song in song.artist_songs %}
+                            <li><a href="{{ url_for('song_details', id=other_song.id) }}" style="color: blue; text-decoration: underline;">{{ other_song.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Column 3: Recommended Songs -->
+            <div class="column">
+                <div class="recommended-songs">
+                    <p><strong>Recommended Songs:</strong></p>
+                    <ul>
+                    {% for recommended_song in song.recommended_songs %}
+                        <li>
+                            <a href="{{ url_for('song_details', id=recommended_song.id) }}" style="color: blue; text-decoration: underline;">{{ recommended_song.title }}</a>
+                            <br>
+                            Artist: {{ recommended_song.artist }}
+                            <hr style="margin: 5px 0;">
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
+        
+        <!-- Lyrics Section -->
         <div class="lyrics">
+            <p><strong>Lyrics</strong></p>
             <!-- Use pre tag to preserve line breaks in lyrics -->
             <pre>{{ song.lyrics }}</pre>
         </div>
-        <div class="artist-info">
-            <p><strong>Artist Image:</strong></p>
-            <img src="{{ song.artist_img }}" alt="Artist Image">
-            <p><strong>Other Songs by {{ song.artist }}:</strong></p>
-            <ul>
-            {% for other_song in song.artist_songs %}
-                <li><a href="{{ url_for('song_details', id=other_song.id) }}" style="color: blue; text-decoration: underline;">{{ other_song.title }}</a></li>
-            {% endfor %}
-            </ul>
-        </div>
-        <div class="recommended-songs">
-            <p><strong>Recommended Songs:</strong></p>
-            <ul>
-            {% for recommended_song in song.recommended_songs %}
-                <li>
-                    <a href="{{ url_for('song_details', id=recommended_song.id) }}" style="color: blue; text-decoration: underline;">{{ recommended_song.title }}</a>
-                    <br>
-                    Artist: {{ recommended_song.artist }}
-                    <hr style="margin: 5px 0;">
-                </li>
-            {% endfor %}
-            </ul>
-        </div>
+        
     </div>
 
     <style>
@@ -60,11 +76,18 @@
             margin-top: 1rem; /* Adjust spacing */
         }
 
-        .album-info {
+        .info-container {
+            display: flex;
+            justify-content: space-between;
             margin-top: 1.5rem; /* Adjust spacing */
         }
+        
+        .column {
+            flex: 1;
+            margin-right: 20px; /* Adjust spacing between columns */
+        }
 
-        .album-info img {
+        .album-info img, .artist-info img {
             max-width: 200px; /* Adjust as needed */
             margin-top: 1rem; /* Adjust spacing */
         }
@@ -79,34 +102,6 @@
             font-size: 1rem; /* Adjust font size */
             line-height: 1.5; /* Adjust line height */
             color: #4a5568; /* Text color */
-        }
-
-        .artist-info {
-            margin-top: 1.5rem; /* Adjust spacing */
-        }
-
-        .artist-info img {
-            max-width: 200px; /* Adjust as needed */
-            margin-top: 1rem; /* Adjust spacing */
-        }
-
-        .recommended-songs {
-            margin-top: 1.5rem; /* Adjust spacing */
-        }
-
-        .recommended-songs ul {
-            list-style-type: none; /* Remove bullet points */
-            padding: 0;
-        }
-
-        .recommended-songs li {
-            margin-bottom: 10px; /* Adjust spacing between recommended songs */
-        }
-
-        .recommended-songs hr {
-            border: 0; /* Remove default border */
-            border-top: 1px solid #ccc; /* Add border between recommended songs */
-            margin: 10px 0; /* Adjust margin */
         }
     </style>
 {% endblock %}
