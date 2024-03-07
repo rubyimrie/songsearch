@@ -49,9 +49,13 @@ def index():
             error_message = f'Error: {response.status_code} - An error occurred while searching.'
 
     # Retrieve liked song IDs
-    liked_songs_response = requests.get('http://34.82.129.217:5000/LikedSongs', json={'email': session.get('user')})
-    liked_song_ids = [song['id'] for song in liked_songs_response.json()]
-
+    if 'user' in session:
+        liked_songs_response = requests.get('http://34.82.129.217:5000/LikedSongs', json={'email': session.get('user')})
+        liked_song_ids = [song['id'] for song in liked_songs_response.json()]
+    # Proceed with further processing using liked_song_ids
+    else:
+        liked_song_ids = []
+        
     # Render the index page template
     return render_template('search.html', search_query=search_query, search_type=search_type, search_results=search_results, liked_song_ids=liked_song_ids, error=error_message)
 
