@@ -27,15 +27,6 @@
     {% if search_query %}
     <p>You searched for: <strong>{{ search_query }}</strong></p>
     <p>Search Type: <strong>{{ 'Ranked Search' if search_type == 'ranked' else 'Simple Search' }}</strong></p>
-    {% if search_type == 'ranked' %}
-    <p>Ranking: <strong>{{ 'TFIDF' if ranking == '1' else 'BM25' }}</strong></p>
-    {% else %}
-    {% if search_type == 'simple' %}
-    {% if search_option == '2' %}
-    <p>Proximity: <strong>{{ proximity }}</strong></p>
-    {% endif %}
-    {% endif %}
-    {% endif %}
     {% if search_results %}
     {% for result in search_results %}
     <div class="result-box">
