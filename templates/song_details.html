@@ -3,12 +3,56 @@
 
 {% block content %}
     <div class="song-details">
-        <h2 >{{ song.title }}</h2>
-        <h3 >{{ song.artist }}</h3>
+        <h2>{{ song.title }}</h2>
+        <h3>{{ song.artist }}</h3>
+        
+        <div class="info-container">
+            <!-- Column 1: Album Info -->
+            <div class="column">
+                <div class="album-info">
+                    <p><strong>Album:</strong> {{ song.album }}</p>
+                    <p><strong>Released Year:</strong> {{ song.released_year }}</p>
+                    <img src="{{ song.album_img }}" alt="Album Image">
+                </div>
+            </div>
+            
+            <!-- Column 2: Artist Info -->
+            <div class="column">
+                <div class="artist-info">
+                    <p><strong>Other Songs by {{ song.artist }}:</strong></p>
+                    <ul>
+                        {% for other_song in song.artist_songs %}
+                            <li><a href="{{ url_for('song_details', id=other_song.id) }}" style="color: blue; text-decoration: underline;">{{ other_song.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Column 3: Recommended Songs -->
+            <div class="column">
+                <div class="recommended-songs">
+                    <p><strong>Recommended Songs:</strong></p>
+                    <ul>
+                    {% for recommended_song in song.recommended_songs %}
+                        <li>
+                            <a href="{{ url_for('song_details', id=recommended_song.id) }}" style="color: blue; text-decoration: underline;">{{ recommended_song.title }}</a>
+                            <br>
+                            Artist: {{ recommended_song.artist }}
+                            <hr style="margin: 5px 0;">
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lyrics Section -->
         <div class="lyrics">
+            <p><strong>Lyrics</strong></p>
             <!-- Use pre tag to preserve line breaks in lyrics -->
             <pre>{{ song.lyrics }}</pre>
         </div>
+        
     </div>
 
     <style>
@@ -32,6 +76,22 @@
             margin-top: 1rem; /* Adjust spacing */
         }
 
+        .info-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem; /* Adjust spacing */
+        }
+        
+        .column {
+            flex: 1;
+            margin-right: 20px; /* Adjust spacing between columns */
+        }
+
+        .album-info img, .artist-info img {
+            max-width: 200px; /* Adjust as needed */
+            margin-top: 1rem; /* Adjust spacing */
+        }
+
         .lyrics {
             margin-top: 1.5rem; /* Adjust spacing */
         }
@@ -43,7 +103,5 @@
             line-height: 1.5; /* Adjust line height */
             color: #4a5568; /* Text color */
         }
-
     </style>
 {% endblock %}
-
