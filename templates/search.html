@@ -20,6 +20,7 @@
             <option value="1">Phrase Search</option>
             <option value="2">Proximity Search</option>
         </select>
+        <input type="text" name="proximity" id="proximity" class="ml-2 mb-6" placeholder="Enter Proximity" style="display: none;">
         <button class="ml-2 bg-indigo-700 hover:bg-pink-700 text-white font-bold py-2 px-4 mb-6 rounded" type="submit">Search</button>
     </form>
     
@@ -29,6 +30,11 @@
     {% if search_type == 'ranked' %}
     <p>Ranking: <strong>{{ 'TFIDF' if ranking == '1' else 'BM25' }}</strong></p>
     {% else %}
+    {% if search_type == 'simple' %}
+    {% if search_option == '2' %}
+    <p>Proximity: <strong>{{ proximity }}</strong></p>
+    {% endif %}
+    {% endif %}
     {% endif %}
     {% if search_results %}
     {% for result in search_results %}
@@ -64,15 +70,31 @@
     // Get the select elements for ranking and search options
     var rankingSelect = document.getElementById("ranking");
     var searchOptionSelect = document.getElementById("search_option");
+    var proximityInput = document.getElementById("proximity");
 
-    // Add event listener to search type select to toggle visibility of ranking or search option dropdowns
+    // Add event listener to search type select to toggle visibility of ranking or search option dropdowns and proximity input
     searchTypeSelect.addEventListener("change", function() {
         if (searchTypeSelect.value === "ranked") {
             rankingSelect.style.display = "inline-block";
             searchOptionSelect.style.display = "none";
+            proximityInput.style.display = "none";
         } else {
             rankingSelect.style.display = "none";
             searchOptionSelect.style.display = "inline-block";
+            if (searchOptionSelect.value === "2") {
+                proximityInput.style.display = "inline-block";
+            } else {
+                proximityInput.style.display = "none";
+            }
+        }
+    });
+
+    // Add event listener to search option select to toggle visibility of proximity input
+    searchOptionSelect.addEventListener("change", function() {
+        if (searchOptionSelect.value === "2") {
+            proximityInput.style.display = "inline-block";
+        } else {
+            proximityInput.style.display = "none";
         }
     });
 </script>
