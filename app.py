@@ -4,19 +4,8 @@ import requests
 
 
 app = Flask(__name__)
-users = {
-    'user1': 'password1',
-    'user2': 'password2',
-    'user3': 'password3'
-}
-mock_playlists = {
-            'user1': ['Playlist 1', 'Playlist 2', 'Playlist 3'],
-            'user2': ['Playlist A', 'Playlist B'],
-            'user3': ['My Playlist', 'Favorites']
-        }
+app.secret_key = 'your_secret_key'  # Set a secret key for session management
 
-
-import requests
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -78,23 +67,26 @@ def song_details(id):
 def login():
     error_message = None
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form.get('email')
+        password = request.form.get('password')
 
-        # Make a GET request to the API endpoint for searching
-        api_url = 'http://34.82.129.217:5000/login'
-        params = {'email': email, 'password': password}  
-        response = requests.get(api_url, params=params)
+        if not email or not password:
+            error_message = 'Email or password is missing'
+        else:
+            api_url = 'http://34.82.129.217:5000/login'
+            try:
+                response = requests.post(api_url, json={'email': email, 'password': password})
+                if response.status_code == 200:
+                    # Store the user's email in the session upon successful login
+                    session['user'] = email
+                    return redirect(url_for('profile'))
+                elif response.status_code == 401:
+                    error_message = 'Invalid email or password'
+                else:
+                    error_message = 'An error occurred. Please try again later.'
+            except requests.exceptions.RequestException as e:
+                error_message = 'An error occurred during the request. Please try again later.'
 
-        if response.status_code == 400:
-            error_message = f'Email or password is missing'
-        elif response.status_code == 401:
-            error_message = f'User already exists'
-        elif response.status_code == 200:
-            error_message = f'successful'
-            return redirect(url_for('profile', email=email))
-        else: 
-            error_message = f'An error occurred'
     return render_template('login.html', error=error_message)
 
 
@@ -124,6 +116,7 @@ def signup():
             error_message = f'An error occurred'
 
     return render_template('signup.html', error=error_message)
+
 
 # Logout route
 @app.route('/logout', methods=['POST'])
@@ -158,19 +151,34 @@ def profile():
     
 @app.route('/saveSong', methods=['POST'])
 def saveSong():
-    # Get the song ID from the form
+    # Get the song ID and user email from the form
     song_id = request.form['song_id']
-    email = request.form['email']
-        
-    # Make a POST request to the API endpoint
-    api_url = 'http://34.82.129.217:5000/Like'
-    data = {'user': email, 'Id': song_id}  
-    response = requests.post(api_url, json=data)
+    email = session.get('user')  # Retrieve user email from the session
     
-    if response.status_code == 200:
-        error_message = f'Song Liked Successfully!'
-    else:
-        error_message = f'An error occurred'
+    if not email:
+        # If user is not logged in, redirect to login page
+        return redirect(url_for('login'))
+
+    # Make a POST request to the API endpoint for liking a song
+    api_url = 'http://34.82.129.217:5000/Like'
+    data = {'id': song_id}
+    headers = {'Content-Type': 'application/json'}
+    
+    try:
+        response = requests.post(api_url, json=data, headers=headers)
+        if response.status_code == 200:
+            # Song liked successfully
+            return redirect(url_for('profile'))
+        elif response.status_code == 409:
+            # Song already liked by the user
+            error_message = 'You have already liked this song.'
+        else:
+            error_message = 'An error occurred while liking the song.'
+    except requests.exceptions.RequestException as e:
+        error_message = 'An error occurred during the request. Please try again later.'
+
+    # Redirect back to the profile page with an error message
+    return redirect(url_for('profile', error=error_message))
 
 
 @app.route('/deleteSong', methods=['POST'])
