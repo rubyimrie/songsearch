@@ -3,11 +3,39 @@
 
 {% block content %}
     <div class="song-details">
-        <h2 >{{ song.title }}</h2>
-        <h3 >{{ song.artist }}</h3>
+        <h2>{{ song.title }}</h2>
+        <h3>{{ song.artist }}</h3>
+        <div class="album-info">
+            <p><strong>Album:</strong> {{ song.album }}</p>
+            <p><strong>Released Year:</strong> {{ song.released_year }}</p>
+            <img src="{{ song.album_img }}" alt="Album Image">
+        </div>
         <div class="lyrics">
             <!-- Use pre tag to preserve line breaks in lyrics -->
             <pre>{{ song.lyrics }}</pre>
+        </div>
+        <div class="artist-info">
+            <p><strong>Artist Image:</strong></p>
+            <img src="{{ song.artist_img }}" alt="Artist Image">
+            <p><strong>Other Songs by {{ song.artist }}:</strong></p>
+            <ul>
+            {% for other_song in song.artist_songs %}
+                <li><a href="{{ url_for('song_details', id=other_song.id) }}" style="color: blue; text-decoration: underline;">{{ other_song.title }}</a></li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div class="recommended-songs">
+            <p><strong>Recommended Songs:</strong></p>
+            <ul>
+            {% for recommended_song in song.recommended_songs %}
+                <li>
+                    <a href="{{ url_for('song_details', id=recommended_song.id) }}" style="color: blue; text-decoration: underline;">{{ recommended_song.title }}</a>
+                    <br>
+                    Artist: {{ recommended_song.artist }}
+                    <hr style="margin: 5px 0;">
+                </li>
+            {% endfor %}
+            </ul>
         </div>
     </div>
 
@@ -32,6 +60,15 @@
             margin-top: 1rem; /* Adjust spacing */
         }
 
+        .album-info {
+            margin-top: 1.5rem; /* Adjust spacing */
+        }
+
+        .album-info img {
+            max-width: 200px; /* Adjust as needed */
+            margin-top: 1rem; /* Adjust spacing */
+        }
+
         .lyrics {
             margin-top: 1.5rem; /* Adjust spacing */
         }
@@ -44,6 +81,32 @@
             color: #4a5568; /* Text color */
         }
 
+        .artist-info {
+            margin-top: 1.5rem; /* Adjust spacing */
+        }
+
+        .artist-info img {
+            max-width: 200px; /* Adjust as needed */
+            margin-top: 1rem; /* Adjust spacing */
+        }
+
+        .recommended-songs {
+            margin-top: 1.5rem; /* Adjust spacing */
+        }
+
+        .recommended-songs ul {
+            list-style-type: none; /* Remove bullet points */
+            padding: 0;
+        }
+
+        .recommended-songs li {
+            margin-bottom: 10px; /* Adjust spacing between recommended songs */
+        }
+
+        .recommended-songs hr {
+            border: 0; /* Remove default border */
+            border-top: 1px solid #ccc; /* Add border between recommended songs */
+            margin: 10px 0; /* Adjust margin */
+        }
     </style>
 {% endblock %}
-
