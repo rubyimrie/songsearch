@@ -22,9 +22,10 @@
                             <p>Artist: {{ result.artist }}</p>
                             <!-- <p>{{ result.lyric_sentence }}</p> -->
                         </div>
-                        <div class="save-button">
-                            <img src="https://cdn0.iconfinder.com/data/icons/social-media-logo-4/32/Social_Media_instagram_save_save_instagram-512.png" alt="save button" width="20" height="20">
-                        </div>
+                        <form method="post" action="{{ url_for('saveSong') }}">
+                            <input type="hidden" name="song_id" value="{{ result.id }}">
+                            <button type="submit" style="border: none; background: none;">Add To Liked Song</button>
+                        </form> 
                     </div>
                 </div>
             {% endfor %}

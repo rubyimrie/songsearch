@@ -1,12 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Profile</title>
-    <link href="{{url_for('static',filename='css/main.css')}}" rel="stylesheet">
-</head>
-</head>
-<body>
-    <h2>Welcome, {{ username }}!</h2>
-    <p>Here are your playlists</p>
-</body>
-</html>
+{% extends 'layout.html' %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block content %}
+    <p class="text-3xl font-light">Welcome, {{ username }}!</p>
+    <div class="liked-songs">
+        <p class="text-7xl text-indigo-700 mb-6 font-semibold">Songle</p>
+        <h2 class="mb-4">Liked Songs</h2>
+        {% for song in likedSongs %}
+            <div class="liked-songs-list">
+                <div class="result">
+                    <!-- <img src="{{ song.image }}" alt="Song Image"> -->
+                    <div class="result-details">
+                        <p><a href="{{ url_for('song_details', id=song.id) }}" style="color: #3b82f6; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#1d4ed8'" onmouseout="this.style.color='#3b82f6'">{{ song.title }}</a></p>
+                        <p>Artist: {{ song.artist }}</p>
+                        <!-- <p>{{ song.lyric_sentence }}</p> -->
+                    </div>
+                    <form method="post" action="{{ url_for('deleteSong') }}">
+                        <input type="hidden" name="song_id" value="{{ song.id }}">
+                        <button type="submit" class="underline text-sm text-slate-300 hover:text-slate-500">Remove</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% if error %}
+    <script>
+        window.onload = function() {
+            alert('{{ error }}');
+        };
+    </script>
+    {% endif %}
+{% endblock %}
