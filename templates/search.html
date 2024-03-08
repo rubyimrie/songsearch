@@ -1,39 +1,93 @@
-
 {% extends 'layout.html' %}
 {% block title %}Search App{% endblock %}
 
 {% block content %}
-    <div class="search-box">
-        <p class="text-7xl text-indigo-700 mb-6 font-semibold">Songle</p>
+<div class="search-box">
+    <p class="text-7xl text-indigo-700 mb-6 font-semibold">Songle</p>
 
-        <form class="flex" method="post">
-            <input class="flex-grow p-2 mb-6 text-indigo-700 border-b-2 border-indigo-500 outline-none focus:bg-gray-300" type="text" name="search_query" placeholder="Enter your search">
-            <button class="ml-2 bg-indigo-700 hover:bg-pink-700 text-white font-bold py-2 px-4 mb-6 rounded " type="submit">Search</button>
-        </form>
-        {% if search_query %}
-            <p>You searched for: <strong>{{ search_query }}</strong></p>
-            {% for result in search_results %}
-                <div class="result-box">
-                    <div class="result">
-                        <!-- <img src="{{ result.image }}" alt="Song Image"> -->
-                        <div class="result-details">
-                            <p><a href="{{ url_for('song_details', id=result.id) }}" style="color: #3b82f6; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#1d4ed8'" onmouseout="this.style.color='#3b82f6'">{{ result.song_name }}</a></p>
-
-                            <p>Artist: {{ result.artist }}</p>
-                            <!-- <p>{{ result.lyric_sentence }}</p> -->
-                        </div>
-                        {% if result.id in liked_song_ids %}
-                        <p>In Liked Songs</p>
-                        {% else %}
-                        <!-- Add To Liked Song button -->
-                        <form method="post" action="{{ url_for('saveSong') }}">
-                            <input type="hidden" name="song_id" value="{{ result.id }}">
-                            <button type="submit" style="border: none; background: none;">Add To Liked Song</button>
-                        </form>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endfor %}
-        {% endif %}
+    <form class="flex" method="post">
+        <input class="flex-grow p-2 mb-6 text-indigo-700 border-b-2 border-indigo-500 outline-none focus:bg-gray-300" type="text" name="search_query" placeholder="Enter your search">
+        <select name="search_type" id="search_type" class="ml-2 mb-6">
+            <option value="ranked" selected>Ranked Search</option>
+            <option value="simple">Simple Search</option>
+        </select>
+        <select name="ranking" id="ranking" class="ml-2 mb-6">
+            <option value="1">TFIDF</option>
+            <option value="2">BM25</option>
+        </select>
+        <select name="search_option" id="search_option" class="ml-2 mb-6" style="display: none;">
+            <option value="0">Terms Search</option>
+            <option value="1">Phrase Search</option>
+            <option value="2">Proximity Search</option>
+        </select>
+        <input type="text" name="proximity" id="proximity" class="ml-2 mb-6" placeholder="Enter Proximity" style="display: none;">
+        <button class="ml-2 bg-indigo-700 hover:bg-pink-700 text-white font-bold py-2 px-4 mb-6 rounded" type="submit">Search</button>
+    </form>
+    
+    {% if search_query %}
+    <p>You searched for: <strong>{{ search_query }}</strong></p>
+    <p>Search Type: <strong>{{ 'Ranked Search' if search_type == 'ranked' else 'Simple Search' }}</strong></p>
+    {% if search_results %}
+    {% for result in search_results %}
+    <div class="result-box">
+        <div class="result">
+            <!-- <img src="{{ result.image }}" alt="Song Image"> -->
+            <div class="result-details">
+                <p><a href="{{ url_for('song_details', id=result.id) }}" style="color: #3b82f6; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#1d4ed8'" onmouseout="this.style.color='#3b82f6'">{{ result.title }}</a></p>
+                <p>Artist: {{ result.artist }}</p>
+                <!-- <p>{{ result.lyric_sentence }}</p> -->
+            </div>
+            {% if result.id in liked_song_ids %}
+            <p>In Liked Songs</p>
+            {% else %}
+            <!-- Add To Liked Song button -->
+            <form method="post" action="{{ url_for('saveSong') }}">
+                <input type="hidden" name="song_id" value="{{ result.id }}">
+                <button type="submit" style="border: none; background: none;">Add To Liked Song</button>
+            </form>
+            {% endif %}
+        </div>
     </div>
+    {% endfor %}
+    {% else %}
+    <p>No search results</p>
+    {% endif %}
+    {% endif %}
+</div>
+
+<script>
+    // Get the select element for search type
+    var searchTypeSelect = document.getElementById("search_type");
+    // Get the select elements for ranking and search options
+    var rankingSelect = document.getElementById("ranking");
+    var searchOptionSelect = document.getElementById("search_option");
+    var proximityInput = document.getElementById("proximity");
+
+    // Add event listener to search type select to toggle visibility of ranking or search option dropdowns and proximity input
+    searchTypeSelect.addEventListener("change", function() {
+        if (searchTypeSelect.value === "ranked") {
+            rankingSelect.style.display = "inline-block";
+            searchOptionSelect.style.display = "none";
+            proximityInput.style.display = "none";
+        } else {
+            rankingSelect.style.display = "none";
+            searchOptionSelect.style.display = "inline-block";
+            if (searchOptionSelect.value === "2") {
+                proximityInput.style.display = "inline-block";
+            } else {
+                proximityInput.style.display = "none";
+            }
+        }
+    });
+
+    // Add event listener to search option select to toggle visibility of proximity input
+    searchOptionSelect.addEventListener("change", function() {
+        if (searchOptionSelect.value === "2") {
+            proximityInput.style.display = "inline-block";
+        } else {
+            proximityInput.style.display = "none";
+        }
+    });
+</script>
+
 {% endblock %}

@@ -10,43 +10,51 @@ app.secret_key = 'your_secret_key'  # Set a secret key for session management
 @app.route('/', methods=['GET', 'POST'])
 def index():
     search_query = None
+    search_type = 'ranked'
     search_results = []
     error_message = None
+    liked_song_ids = []
 
     if request.method == 'POST':
-        # Retrieve the search query from the form
+        # Retrieve the search query and type from the form
         search_query = request.form.get('search_query')
+        search_type = request.form.get('search_type')
 
-        # Make a GET request to the API endpoint for searching
-        api_url = 'http://34.82.129.217:5000/ranked'
-        params = {'query': search_query, 'page': 1, 'filter': '', 'ranking': '1', 'show': 0}  # Adjust parameters as needed
+        # Prepare parameters for API request based on search type
+        if search_type == 'ranked':
+            ranking = request.form.get('ranking')
+            params = {'query': search_query, 'page': 1, 'filter': '', 'ranking': ranking, 'show': 0}  # Adjust common parameters as needed
+            api_url = 'http://34.82.129.217:5000/ranked'
+            type = None
+        elif search_type == 'simple':
+            type = request.form.get('search_option')
+            if type == '2':
+                prox = request.form.get('proximity')
+            else:
+                prox = 0
+            params = {'query': search_query, 'page': 1, 'filter': '', 'type':type, 'show': 0, 'proximity':prox}  # Adjust common parameters as needed
+            api_url = 'http://34.82.129.217:5000/search'
+        
+        # Make a GET request to the appropriate API endpoint
         response = requests.get(api_url, params=params)
         
         if response.status_code == 200:
             # Parse the JSON response
             data = response.json()
-            ranked_results = data[0]  # Extract the list of search results
-            total_results = data[1]   # Extract the total number of results
+            search_results = data[0]  # Assuming the response contains the search results directly
             
-            if ranked_results:
-                # Format the search results for display
-                for result in ranked_results:
-                    search_results.append({
-                        'song_name': result['title'],
-                        'artist': result['artist'],
-                        'id': result['id'],
-                        'album': result['album'],
-                        'released_year': result['released_year']
-                    })
-            else:
+            if not search_results:
                 error_message = f'No results found for the query: {search_query}'
         else:
             # Handle error response
             error_message = f'Error: {response.status_code} - An error occurred while searching.'
 
-
+        # Retrieve liked song IDs
+    
+        
     # Render the index page template
-    return render_template('search.html', search_query=search_query, search_results=search_results, error=error_message)
+    return render_template('search.html', search_query=search_query, search_type=search_type, search_results=search_results, liked_song_ids=liked_song_ids, error=error_message)
+
 
 
 
@@ -130,11 +138,12 @@ def logout():
     # Check the response status code
     if response.status_code == 200:
         error_message = 'Logout successful'
+        session.pop('user', None)
     else:
         error_message = 'An error occurred'
 
     # Redirect to the login page with an error message
-    return redirect(url_for('login'), error=error_message)
+    return redirect(url_for('login'))
 
 @app.route('/profile')
 def profile():
