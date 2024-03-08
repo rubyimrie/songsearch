@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+{% block title %}Songle : MP3 Search{% endblock %}
+
+{% block content %}
+<div class="mp3-upload">
+    <p class="text-7xl text-indigo-700 mb-6 font-semibold">MP3 Search</p>
+    <h1 style="font-size: 16px;">Please upload an MP3 file below</h1>
+    <hr style="width: 80%; margin-bottom: 20px;">
+    <form method="post" enctype="multipart/form-data" action="{{ url_for('mp3recommend') }}">
+        <input type="file" name="file" accept=".mp3" style="font-size: 18px;">
+        <button class="upload-button" type="submit" style="font-size: 18px;">Upload</button>
+        {% if error %}
+            <p style="color: red; font-size: 16px;">{{ error }}</p>
+        {% endif %}
+    </form>
+</div>
+<div>
+    {% if search_results %}
+    <hr style="margin-top: 15px; margin-bottom: 15px;">
+    <p style="font-size: 18px;">These are similar songs to <strong>{{ filename }}</strong>:</p>
+    <hr style="margin-top: 15px; margin-bottom: 15px;">
+        <ul>
+            {% for result in search_results %}
+                <li style="font-size: 18px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <strong>{{ result.Title }}</strong><br>
+                            Artist: {{ result.Artist }}
+                        </div>
+                        <div>
+                            Plays: {{ result.Plays }}<br>
+                            <a href="{{ result.URL }}" target="_blank" style="color: blue; text-decoration: underline;">Download Here</a>
+                        </div>
+                    </div>
+                    <hr style="margin-top: 10px; margin-bottom: 10px;">
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

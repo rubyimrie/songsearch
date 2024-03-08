@@ -215,5 +215,56 @@ def deleteSong():
     likedSongs = requests.get('http://34.82.129.217:5000/LikedSongs', json={'email': email}).json()
     return render_template('profile.html', username=username, likedSongs=likedSongs, error=error_message)
 
+@app.route('/mp3recommend', methods=['POST', 'GET'])
+def mp3recommend():
+    # Initialize variables
+    search_results = []
+    error_message = None
+    filename = None
+    if request.method == 'POST':
+        # Check if the POST request has the file part
+        if 'file' not in request.files:
+            error_message = "No file part"
+            return render_template('mp3_search.html', search_results=search_results, filename=filename, error=error_message)
+
+        
+        file = request.files['file']
+        filename = file.filename  # Get the filename
+        # If the user does not select a file, the browser submits an empty file without a filename
+        if file.filename == '':
+            error_message =  "No selected file"
+            return render_template('mp3_search.html', search_results=search_results, filename=filename, error=error_message)
+
+        
+        # Process the uploaded MP3 file
+        api_url = 'http://34.82.129.217:5000/mp3recommend'
+        data = {'count': 9}  # Include the 'count' parameter in the data
+        files = {'file': (file)}  # Pass the file content to the API
+
+        response = requests.post(api_url, params=data, files=files)
+
+        try:
+            response_json = response.json()
+        except Exception as e:
+            print(f"Error parsing response JSON: {e}")
+
+
+        if response.status_code == 200:
+            # Parse the JSON response
+            data = response.json()
+            search_results = data
+            error_message = None
+            print(search_results)  # Print the response data
+        else:
+            # Handle error response
+            error_message = f'Error: {response.status_code} - An error occurred.'
+            search_results = []
+
+        
+
+    # Render the template with search results
+    return render_template('mp3_search.html', search_results=search_results, filename=filename, error=error_message)
+
 if __name__ == "__main__":
     app.run(debug=True)
+
