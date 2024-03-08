@@ -151,11 +151,16 @@ def profile():
     if 'user' in session:
         email = session['user']
         
-        api_url = 'http://34.82.129.217:5000/LikedSongs'  
-        data = {'email': email}  
-        response = requests.get(api_url, json=data)
+        api_url_liked = 'http://34.82.129.217:5000/LikedSongs'  
+        api_url_rec = 'http://34.82.129.217:5000/LikedSongs'  
+        data_like = {'email': email}  
+        response_like = requests.get(api_url_liked, json=data_like)
+
+        api_url_rec = 'http://34.82.129.217:5000/RecommendedSongs'  
+        data_rec = {'email': email}  
+        response_rec = requests.get(api_url_rec, json=data_rec)
         
-        return render_template('profile.html', username=email, likedSongs=response.json()) 
+        return render_template('profile.html', username=email, likedSongs=response_like.json(),recommendedSongs=response_rec.json()) 
     else:
         # If user is not logged in, redirect to login page
         return redirect(url_for('login'))
@@ -191,7 +196,13 @@ def saveSong():
     # Render the profile page template with an error message
     username = session.get('user')
     likedSongs = requests.get('http://34.82.129.217:5000/LikedSongs', json={'email': email}).json()
-    return render_template('profile.html', username=username, likedSongs=likedSongs, error=error_message)
+
+    api_url_rec = 'http://34.82.129.217:5000/RecommendedSongs'  
+    data_rec = {'email': email}  
+    response_rec = requests.get(api_url_rec, json=data_rec)
+
+
+    return render_template('profile.html', username=username, likedSongs=likedSongs, error=error_message,recommendedSongs=response_rec.json())
 
 
 
