@@ -13,7 +13,6 @@ def index():
     search_type = 'ranked'
     search_results = []
     error_message = None
-    liked_song_ids = []
 
     if request.method == 'POST':
         # Retrieve the search query and type from the form
@@ -53,7 +52,7 @@ def index():
     
         
     # Render the index page template
-    return render_template('search.html', search_query=search_query, search_type=search_type, search_results=search_results, liked_song_ids=liked_song_ids, error=error_message)
+    return render_template('search.html', search_query=search_query, search_type=search_type, search_results=search_results, error=error_message)
 
 
 

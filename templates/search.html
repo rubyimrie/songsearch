@@ -37,15 +37,11 @@
                 <p>Artist: {{ result.artist }}</p>
                 <!-- <p>{{ result.lyric_sentence }}</p> -->
             </div>
-            {% if result.id in liked_song_ids %}
-            <p>In Liked Songs</p>
-            {% else %}
             <!-- Add To Liked Song button -->
             <form method="post" action="{{ url_for('saveSong') }}">
                 <input type="hidden" name="song_id" value="{{ result.id }}">
                 <button type="submit" class="add-button">Add To Liked Songs</button>
             </form>
-            {% endif %}
         </div>
     </div>
     {% endfor %}
