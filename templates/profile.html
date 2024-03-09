@@ -8,16 +8,22 @@ Profile
     <p class="text-3xl font-light">Welcome, {{ username }}!</p>
     <div class="liked-songs">
         <p class="text-7xl text-indigo-700 mb-6 font-semibold">Songle</p>
-        <h2 class="liked-heading">Liked Songs</h2>
+        <div class="liked-heading">
+            <h2>Liked Songs</h2>
+            <button id="toggleLikedSongs" class="collapse-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
+                </svg>
+            </button>           
+        </div>
         {% if likedSongs %}
+        <div id="likedSongsSection" class="liked-songs-section">
             {% for song in likedSongs %}
                 <div class="liked-songs-list">
                     <div class="result flex justify-between items-center py-4 border-b border-gray-200">
-                        <!-- <img src="{{ song.image }}" alt="Song Image"> -->
                         <div class="result-details">
                             <p><a href="{{ url_for('song_details', id=song.id) }}" style="color: #3b82f6; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#1d4ed8'" onmouseout="this.style.color='#3b82f6'">{{ song.title }}</a></p>
                             <p>Artist: {{ song.artist }}</p>
-                            <!-- <p>{{ song.lyric_sentence }}</p> -->
                         </div>
                         <form method="post" action="{{ url_for('deleteSong') }}">
                             <input type="hidden" name="song_id" value="{{ song.id }}">
@@ -27,30 +33,40 @@ Profile
                 </div>
                 <hr> <!-- Line separating each song -->
             {% endfor %}
+        </div>
         {% else %}
             <p>No liked songs yet</p>
         {% endif %}
-        
-        <h2 class="liked-heading">Recommended Songs</h2>
-        {% if recommendedSongs %}
+        <div class="liked-heading">
+        <h2>Recommended Songs</h2>
+        <button id="toggleRecommendedSongs" class="collapse-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
+            </svg>
+        </button>    
+        </div>    
+        {% if recommendedSongs %}   
+        <div id="recommendedSongsSection" class="recommended-songs-section">
             {% for song in recommendedSongs %}
-                <div class="result flex justify-between items-center py-4 border-b border-gray-200">
-                    <div class="result-details">
-                        <p><a href="{{ url_for('song_details', id=song.id) }}" style="color: #3b82f6; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#1d4ed8'" onmouseout="this.style.color='#3b82f6'">{{ song.title }}</a></p>
-                        <p>Artist: {{ song.artist }}</p>
+                <div class="recommended-songs-list">
+                    <div class="result flex justify-between items-center py-4 border-b border-gray-200">
+                        <div class="result-details">
+                            <p><a href="{{ url_for('song_details', id=song.id) }}" style="color: #3b82f6; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#1d4ed8'" onmouseout="this.style.color='#3b82f6'">{{ song.title }}</a></p>
+                            <p>Artist: {{ song.artist }}</p>
+                        </div>
+                        <form method="post" action="{{ url_for('saveSong') }}">
+                            <input type="hidden" name="song_id" value="{{ song.id }}">
+                            <button type="submit" class="add-button">Add to Liked Songs</button>
+                        </form>
                     </div>
-                    <!-- Add a form with a button to save the song -->
-                    <form method="post" action="{{ url_for('saveSong') }}">
-                        <input type="hidden" name="song_id" value="{{ song.id }}">
-                        <button type="submit" class="add-button">Add to Liked Songs</button>
-                    </form>
                 </div>
                 <hr> <!-- Line separating each song -->
             {% endfor %}
-            </div>
+        </div>
         {% else %}
             <p>Please like a song to get recommended songs</p>
         {% endif %}
+    </div>
     {% if error %}
     <script>
         window.onload = function() {
@@ -58,27 +74,44 @@ Profile
         };
     </script>
     {% endif %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleLikedSongsButton = document.getElementById('toggleLikedSongs');
+            const likedSongsSection = document.getElementById('likedSongsSection');
+            const toggleRecommendedSongsButton = document.getElementById('toggleRecommendedSongs');
+            const recommendedSongsSection = document.getElementById('recommendedSongsSection');
+            
+            let likedShowing = true; // Initialize as true since liked section is initially showing
+            let recommendedShowing = true; // Initialize as true since recommended section is initially showing
+            
+            // Function to toggle the liked songs section and update chevron icon
+            function toggleSection(section, button) {
+                if (section.style.display === 'none') {
+                    section.style.display = 'block';
+                    button.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
+                        </svg>
+                    `;
+                } else {
+                    section.style.display = 'none';
+                    button.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    `;
+                }
+            }
+            
+            // Event listener for the toggle liked songs button
+            toggleLikedSongsButton.addEventListener('click', function() {
+                toggleSection(likedSongsSection, toggleLikedSongsButton);
+            });
+            
+            // Event listener for the toggle recommended songs button
+            toggleRecommendedSongsButton.addEventListener('click', function() {
+                toggleSection(recommendedSongsSection, toggleRecommendedSongsButton);
+            });
+        });
+    </script>
 {% endblock %}
-
-<style>
-    .link {
-        color: grey;
-        text-decoration: none;
-        transition: color 0.3s;
-    }
-
-    .link:hover {
-        color: #3b82f6; /* Darker grey on hover */
-    }
-
-
-    .liked-songs-list {
-        margin-bottom: 20px; /* Adjust spacing between songs */
-    }
-
-    hr {
-        border: none;
-        border-top: 1px solid #ccc;
-        margin: 10px 0; /* Adjust spacing between lines */
-    }
-</style>
