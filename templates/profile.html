@@ -16,6 +16,7 @@ Profile
                 </svg>
             </button>           
         </div>
+        {% if likedSongs %}
         <div id="likedSongsSection" class="liked-songs-section">
             {% for song in likedSongs %}
                 <div class="liked-songs-list">
@@ -33,6 +34,9 @@ Profile
                 <hr> <!-- Line separating each song -->
             {% endfor %}
         </div>
+        {% else %}
+            <p>No liked songs yet</p>
+        {% endif %}
         <div class="liked-heading">
         <h2>Recommended Songs</h2>
         <button id="toggleRecommendedSongs" class="collapse-button">
@@ -40,7 +44,8 @@ Profile
                 <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
             </svg>
         </button>    
-        </div>       
+        </div>    
+        {% if recommendedSongs %}   
         <div id="recommendedSongsSection" class="recommended-songs-section">
             {% for song in recommendedSongs %}
                 <div class="recommended-songs-list">
@@ -58,6 +63,9 @@ Profile
                 <hr> <!-- Line separating each song -->
             {% endfor %}
         </div>
+        {% else %}
+            <p>Please like a song to get recommended songs</p>
+        {% endif %}
     </div>
     {% if error %}
     <script>

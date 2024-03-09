@@ -143,25 +143,38 @@
 </style>
 <body class="flex h-screen bg-sky-100">
     <header style="display: flex; justify-content: space-between; align-items: center;" class="bg-indigo-700">
-        <div>
-            <a href="{{ url_for('login') }}" class="button">Log In</a>
-        </div>
-        <div>
-            <a href="{{ url_for('index') }}" class="button">Songle</a>
-        </div>
-        <div>
-            <a href="{{ url_for('mp3recommend')}}" class="button">MP3 Recommendation</a>
-        </div>
-        <div>
-            <a href="{{ url_for('profile') }}" class="button">Liked Songs</a>
-        </div>
-        <div>
-            <form method="post" action="{{ url_for('logout') }}" style="display: inline-block;">
-                <button type="submit" style=" border: none; cursor: pointer; margin-top: 10px;">
-                    <img width="35" height="35" src="https://img.icons8.com/ios-glyphs/30/FFFFFF/exit.png" alt="exit"/>
-                </button>
-            </form>
-        </div>
+        {% if username %}
+            <div style="display: flex; align-items: center;">
+                <div style="margin-right: 10px;">
+                    <a href="{{ url_for('profile') }}" class="button">Profile</a>
+                </div>
+                <div>
+                    <form method="post" action="{{ url_for('logout') }}" style="display: inline-block;">
+                        <button type="submit" style="border: none; cursor: pointer; margin-top: 10px;">
+                            <img width="35" height="35" src="https://img.icons8.com/ios-glyphs/30/FFFFFF/exit.png" alt="exit"/>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div>
+                <a href="{{ url_for('index') }}" class="button">Songle</a>
+            </div>
+            <div>
+                <a href="{{ url_for('mp3recommend')}}" class="button">MP3 Recommendation</a>
+            </div>
+            
+        {% else %}
+            <div>
+                <a href="{{ url_for('login') }}" class="button">Log In</a>
+            </div>
+            <div>
+                <a href="{{ url_for('index') }}" class="button">Songle</a>
+            </div>
+            <div>
+                <a href="{{ url_for('mp3recommend')}}" class="button">MP3 Recommendation</a>
+            </div>
+        {% endif %}
+        
     </header>
     
 
