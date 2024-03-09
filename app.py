@@ -6,7 +6,7 @@ import requests
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Set a secret key for session management
 
-# Your imports and other code here...
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -16,7 +16,8 @@ def index():
     error_message = None
     api_url = None
     params = {}
-
+    total_pages = 0  # Initialize total_pages to 0
+    
     if 'user' in session:
         username = session.get('user')
     else:
@@ -54,8 +55,9 @@ def index():
         if response.status_code == 200:
             # Parse the JSON response
             data = response.json()
-            search_results = data[0]  # Assuming the response contains the search results directly
-            
+            search_results = data[0]
+            length = data[1]
+            total_pages = (length + 9) // 10
             if not search_results:
                 error_message = f'No results found for the query: {search_query}'
         else:
@@ -70,6 +72,7 @@ def index():
         type = args.get('type')
         ranking = args.get('ranking')
         prox = args.get('prox')
+        total_pages = int(args.get('total_pages', 0))  # Convert 'total_pages' to an integer, default to 0 if not provided
 
         # Prepare parameters for API request based on search type
         if search_type == 'ranked':
@@ -94,11 +97,9 @@ def index():
                 # Handle error response
                 error_message = f'Error: {response.status_code} - An error occurred while searching.'
 
-        # Calculate total_pages (total number of pages), current_page, has_prev, has_next, prev_page, and next_page
-    total_pages = 10  # Example total number of pages
     current_page = page
     has_prev = current_page > 1
-    has_next = current_page < total_pages
+    has_next = current_page < total_pages if total_pages is not None else False  # Ensure total_pages is not None before comparison
     prev_page = current_page - 1 if has_prev else None
     next_page = current_page + 1 if has_next else None
     
@@ -331,7 +332,6 @@ def mp3recommend():
             data = response.json()
             search_results = data
             error_message = None
-            print(search_results)  # Print the response data
         else:
             # Handle error response
             error_message = f'Error: {response.status_code} - An error occurred.'

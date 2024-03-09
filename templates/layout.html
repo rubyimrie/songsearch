@@ -139,6 +139,19 @@
         justify-content: space-between;
         align-items: center;
     }
+    .center-heading {
+    font-size: 27px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: font-size 0.3s ease; /* Smooth transition effect */
+    }
+
+    .center-heading:hover {
+        font-size: 33px; /* Increase font size on hover */
+    }
+
 
 </style>
 <body class="flex h-screen bg-sky-100">
@@ -157,7 +170,7 @@
                 </div>
             </div>
             <div>
-                <a href="{{ url_for('index') }}" class="button">Songle</a>
+                <a href="{{ url_for('index') }}" class="center-heading">Songle</a>
             </div>
             <div>
                 <a href="{{ url_for('mp3recommend')}}" class="button">MP3 Recommendation</a>
@@ -168,7 +181,7 @@
                 <a href="{{ url_for('login') }}" class="button">Log In</a>
             </div>
             <div>
-                <a href="{{ url_for('index') }}" class="button">Songle</a>
+                <a href="{{ url_for('index') }}" class="center-heading">Songle</a>
             </div>
             <div>
                 <a href="{{ url_for('mp3recommend')}}" class="button">MP3 Recommendation</a>
