@@ -8,10 +8,10 @@ Profile
     <p class="text-3xl font-light">Welcome, {{ username }}!</p>
     <div class="liked-songs">
         <p class="text-7xl text-indigo-700 mb-6 font-semibold">Songle</p>
-        <h2 class="mb-4"><strong>Liked Songs</strong></h2>
+        <h2 class="liked-heading">Liked Songs</h2>
         {% for song in likedSongs %}
             <div class="liked-songs-list">
-                <div class="result">
+                <div class="result flex justify-between items-center py-4 border-b border-gray-200">
                     <!-- <img src="{{ song.image }}" alt="Song Image"> -->
                     <div class="result-details">
                         <p><a href="{{ url_for('song_details', id=song.id) }}" style="color: #3b82f6; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#1d4ed8'" onmouseout="this.style.color='#3b82f6'">{{ song.title }}</a></p>
@@ -20,14 +20,15 @@ Profile
                     </div>
                     <form method="post" action="{{ url_for('deleteSong') }}">
                         <input type="hidden" name="song_id" value="{{ song.id }}">
-                        <button type="submit" class="underline text-sm text-slate-300 hover:text-slate-500">Remove</button>
+                        <button type="submit" class="remove-button">Remove</button>
                     </form>
                 </div>
             </div>
+            <hr> <!-- Line separating each song -->
         {% endfor %}
-        <h2 class="mb-4"><strong>Recommended Songs</strong></h2>
+        <h2 class="liked-heading">Recommended Songs</h2>
         {% for song in recommendedSongs %}
-            <div class="result">
+            <div class="result flex justify-between items-center py-4 border-b border-gray-200">
                 <div class="result-details">
                     <p><a href="{{ url_for('song_details', id=song.id) }}" style="color: #3b82f6; text-decoration: underline; transition: color 0.3s;" onmouseover="this.style.color='#1d4ed8'" onmouseout="this.style.color='#3b82f6'">{{ song.title }}</a></p>
                     <p>Artist: {{ song.artist }}</p>
@@ -35,9 +36,10 @@ Profile
                 <!-- Add a form with a button to save the song -->
                 <form method="post" action="{{ url_for('saveSong') }}">
                     <input type="hidden" name="song_id" value="{{ song.id }}">
-                    <button type="submit" class="underline text-sm text-slate-300 hover:text-slate-500">Save to Liked Songs</button>
+                    <button type="submit" class="add-button">Add to Liked Songs</button>
                 </form>
             </div>
+            <hr> <!-- Line separating each song -->
         {% endfor %}
     </div>
     {% if error %}
@@ -48,3 +50,26 @@ Profile
     </script>
     {% endif %}
 {% endblock %}
+
+<style>
+    .link {
+        color: grey;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .link:hover {
+        color: #3b82f6; /* Darker grey on hover */
+    }
+
+
+    .liked-songs-list {
+        margin-bottom: 20px; /* Adjust spacing between songs */
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid #ccc;
+        margin: 10px 0; /* Adjust spacing between lines */
+    }
+</style>

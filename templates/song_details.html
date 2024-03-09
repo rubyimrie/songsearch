@@ -5,6 +5,10 @@
     <div class="song-details">
         <h2>{{ song.title }}</h2>
         <h3>{{ song.artist }}</h3>
+        <form method="post" action="{{ url_for('saveSong') }}">
+            <input type="hidden" name="song_id" value="{{ song.id }}">
+            <button type="submit" class="add-button">Add to Liked Songs</button>
+        </form>
         
         <div class="info-container">
             <!-- Column 1: Album Info -->

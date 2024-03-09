@@ -113,6 +113,29 @@
         transform: scale(1.1); /* Make the button slightly bigger on hover */
     }
 
+    
+    .remove-button,
+    .add-button {
+        background-color: transparent;
+        color: grey;
+        border: none;
+        cursor: pointer;
+        text-decoration: underline;
+        transition: color 0.3s;
+        font-size: 12px;
+    }
+
+    .remove-button:hover,
+    .add-button:hover {
+        color: #222326; /* Darker grey on hover */
+    }
+
+    .liked-heading {
+        font-size: 27px;
+        font-weight: 500;
+        border-bottom: 1px solid #393535;
+        margin-top: 5px;
+    }
 
 </style>
 <body class="flex h-screen bg-sky-100">
