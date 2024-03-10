@@ -1,6 +1,7 @@
 from flask import Flask, url_for, request, render_template, redirect, url_for, session, flash
 from markupsafe import escape
 import requests
+import math
 
 
 app = Flask(__name__)
@@ -13,6 +14,7 @@ def index():
     search_query = None
     search_type = 'ranked'
     search_results = []
+    num_results = 0
     error_message = None
     api_url = None
     params = {}
@@ -55,6 +57,7 @@ def index():
             # Parse the JSON response
             data = response.json()
             search_results = data[0]  # Assuming the response contains the search results directly
+            num_results = data[1]
             
             if not search_results:
                 error_message = f'No results found for the query: {search_query}'
@@ -86,7 +89,8 @@ def index():
             if response.status_code == 200:
                 # Parse the JSON response
                 data = response.json()
-                search_results = data[0]  # Assuming the response contains the search results directly
+                search_results = data[0]  
+                num_results = data[1]
                 
                 if not search_results:
                     error_message = f'No results found for the query: {search_query}'
@@ -95,7 +99,9 @@ def index():
                 error_message = f'Error: {response.status_code} - An error occurred while searching.'
 
         # Calculate total_pages (total number of pages), current_page, has_prev, has_next, prev_page, and next_page
-    total_pages = 10  # Example total number of pages
+
+    results_per_page = 10
+    total_pages = math.ceil(num_results / results_per_page)
     current_page = page
     has_prev = current_page > 1
     has_next = current_page < total_pages
