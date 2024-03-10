@@ -45,24 +45,19 @@
     </div>
     {% endfor %}
     {% if total_pages > 1 %}
-        <div class="pagination">
-            <div class="row">
-                <div class="col">
-                    {% if has_prev %}
-                        <a href="{{ url_for('index', page=prev_page, search_query=search_query, search_type=search_type, prox=prox, type=type, ranking=ranking) }}" class="btn btn-primary btn-block">Previous</a>
-                    {% endif %}
-                </div>
-                <div class="col">
-                    <p class="text-center">Page: {{ current_page }} / {{ total_pages }}</p>
-                </div>
-                <div class="col">
-                    {% if has_next %}
-                        <a href="{{ url_for('index', page=next_page, search_query=search_query, search_type=search_type, prox=prox, type=type, ranking=ranking) }}" class="btn btn-primary btn-block">Next</a>
-                    {% endif %}
-                </div>
+    <div class="pagination">
+        <div class="row">
+            {% if has_prev %}
+            <a href="{{ url_for('index', page=prev_page, search_query=search_query, search_type=search_type, prox=prox, type=type, ranking=ranking) }}" class="page-button">Previous</a>
+            {% endif %}
+            <div class="col text-center">
+                <p>Page: {{ current_page }} / {{ total_pages }}</p>
             </div>
-            
+            {% if has_next %}
+            <a href="{{ url_for('index', page=next_page, search_query=search_query, search_type=search_type, prox=prox, type=type, ranking=ranking) }}" class="page-button">Next</a>
+            {% endif %}
         </div>
+    </div>
     {% endif %}
     {% else %}
     <p>No search results</p>
