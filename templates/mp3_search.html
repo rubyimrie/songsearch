@@ -15,6 +15,11 @@
     </form>
 </div>
 <div>
+    {% if not search_results and filename %}
+        <!-- Display loading gif while waiting for results -->
+        <img src="../static/img/loading.gif" alt="Loading..." style="display: block; margin: auto;">
+    {% endif %}
+    
     {% if search_results %}
     <hr style="margin-top: 15px; margin-bottom: 15px;">
     <p style="font-size: 18px;">These are similar songs to <strong>{{ filename }}</strong>:</p>
