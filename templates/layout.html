@@ -131,6 +131,23 @@
         color: #222326; /* Darker grey on hover */
     }
 
+
+    .page-button {
+        background-color: transparent;
+        color: grey;
+        border: none;
+        cursor: pointer;
+        text-decoration: underline;
+        transition: color 0.3s;
+        font-size: 16px;
+    }
+
+
+    .page-button:hover {
+        color: #222326; /* Darker grey on hover */
+    }
+
+
     .liked-heading {
         font-size: 27px;
         font-weight: 500;
@@ -139,6 +156,24 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center; /* Center align the items */
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between; /* Distribute items evenly */
+        align-items: center; /* Center align vertically */
+        width: 100%; /* Ensure the row spans the full width */
+    }
+
+    .col {
+        flex-grow: 1; /* Allow columns to grow and take up equal space */
+        margin: 0 5px; /* Add some spacing between elements */
+        text-align: center; /* Center align the text */
     }
 
 </style>
