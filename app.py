@@ -270,16 +270,8 @@ def saveSong():
     except requests.exceptions.RequestException as e:
         error_message = 'An error occurred during the request. Please try again later.'
 
-    # Render the profile page template with an error message
-    username = session.get('user')
-    likedSongs = requests.get('http://34.82.129.217:5000/LikedSongs', json={'email': email}).json()
-
-    api_url_rec = 'http://34.82.129.217:5000/RecommendedSongs'  
-    data_rec = {'email': email}  
-    response_rec = requests.get(api_url_rec, json=data_rec)
-
-
-    return render_template('profile.html', username=username, likedSongs=likedSongs, error=error_message,recommendedSongs=response_rec.json())
+    # Redirect to profile page with an error message
+    return redirect(url_for('profile', error=error_message))
 
 
 
@@ -295,13 +287,12 @@ def deleteSong():
     response = requests.post(api_url, json=data)
     
     if response.status_code == 200:
-        error_message='Song deleted successfully!'
+        error_message = 'Song deleted successfully!'
     else:
-        error_message='An error occurred while deleting the song.'
+        error_message = 'An error occurred while deleting the song.'
 
-    username = session.get('user')
-    likedSongs = requests.get('http://34.82.129.217:5000/LikedSongs', json={'email': email}).json()
-    return render_template('profile.html', username=username, likedSongs=likedSongs, error=error_message)
+    # Redirect to profile page with parameters
+    return redirect(url_for('profile', username=session.get('user'), error=error_message))
 
 @app.route('/mp3recommend', methods=['POST', 'GET'])
 def mp3recommend():
