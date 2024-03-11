@@ -26,6 +26,15 @@ def index():
 
     page = request.args.get('page', 1, type=int)
 
+    api_count_info = None
+    try:
+        count_response = requests.get('http://34.82.129.217:5000/count')
+        if count_response.status_code == 200:
+            api_count_info = count_response.json()
+    except requests.RequestException as e:
+        # Handle request exception
+        print("Error fetching count information:", e)
+
     if request.method == 'POST':
         type = None
         ranking = None
@@ -109,7 +118,7 @@ def index():
     next_page = current_page + 1 if has_next else None
     
     # Render the index page template
-    return render_template('search.html', username=username, search_query=search_query, search_type=search_type, type=type, ranking=ranking, prox=prox, search_results=search_results, error=error_message, total_pages=total_pages, current_page=current_page, has_prev=has_prev, has_next=has_next, prev_page=prev_page, next_page=next_page)
+    return render_template('search.html', username=username, search_query=search_query, search_type=search_type, type=type, ranking=ranking, prox=prox, search_results=search_results, error=error_message, total_pages=total_pages, current_page=current_page, has_prev=has_prev, has_next=has_next, prev_page=prev_page, next_page=next_page, api_count_info=api_count_info)
 
 
 @app.route('/song_details/<id>')
