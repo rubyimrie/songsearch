@@ -348,6 +348,10 @@ def mp3recommend():
     # Render the template with search results
     return render_template('mp3_search.html',username=username, search_results=search_results, filename=filename, error=error_message)
 
+@app.route('/userguide', methods=['POST', 'GET'])
+def userguide():
+    return render_template('userguide.html')
+
 if __name__ == "__main__":
     app.run(debug=True)
 

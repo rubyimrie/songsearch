@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+{% block title %}User Guide{% endblock %}
+
+{% block content %}
+<div class="flex h-screen bg-sky-100 w-full">
+    <object data="sample.pdf" type="application/pdf" width="100%" height="100%">
+        <embed src="../static/assets/UserGuidePDF.pdf" width="100%" height="100%">
+    </object>
+</div>
+{% endblock %}
