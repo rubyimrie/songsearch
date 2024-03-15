@@ -4,32 +4,35 @@
 {% block content %}
 <div class="search-box">
     <div>
-        <img src="../static/img/logo.png" width="90" height="90" style="display: inline-block; vertical-align: middle; margin-bottom: 40px;" >
+        <img src="../static/img/logo.png" width="90" height="90" style="display: inline-block; vertical-align: middle;" >
         <p class="text-7xl text-indigo-700 mb-4 font-semibold" style="display: inline-block;">ongle</p>
     </div>
-    <div class="mb-6 text-sm text-indigo-700  rounded-i">
+    <div class="mb-6 text-sm text-indigo-700 rounded-i">
         <div class="info">
-        {{api_count_info.count}} Songs , Last Indexed: {{api_count_info.last_index}},  Last Live Indexed: {{api_count_info.last_live}}
+            {{api_count_info.count}} Songs , Last Indexed: {{api_count_info.last_index}},  Last Live Indexed: {{api_count_info.last_live}}
         </div>
     </div>
-    <form class="flex" method="post">
-        <input class="flex-grow p-2 mb-6 text-indigo-700 border-b-2 border-indigo-500 outline-none focus:bg-gray-300" type="text" name="search_query" placeholder="Enter your search">
-        <select name="search_type" id="search_type" class="ml-2 mb-6">
+    <form class="flex search-form" method="post">
+        <input class="flex-grow p-2 text-indigo-700 border-b-2 border-indigo-500 outline-none focus:bg-gray-300" type="text" name="search_query" placeholder="Enter your search" id="search_query_input">
+        <select name="search_type" id="search_type" class=" ml-2 border-b-2" style="padding: 1rem; font-size: 1rem;">
             <option value="ranked" selected>Ranked Search</option>
             <option value="simple">Simple Search</option>
         </select>
-        <select name="ranking" id="ranking" class="ml-2 mb-6">
+        <select name="ranking" id="ranking" class="ml-2 border-b-2" style="padding: 1rem; font-size: 1rem;">
             <option value="1">TFIDF</option>
             <option value="2">BM25</option>
         </select>
-        <select name="search_option" id="search_option" class="ml-2 mb-6" style="display: none;">
+        <select name="search_option" id="search_option" class="ml-2 border-b-2" style="display: none; padding: 1rem; font-size: 1rem;">
             <option value="0">Terms Search</option>
             <option value="1">Phrase Search</option>
             <option value="2">Proximity Search</option>
         </select>
-        <input type="text" name="proximity" id="proximity" class="ml-2 mb-6" placeholder="Enter Proximity" style="display: none;">
-        <button class="ml-2 bg-indigo-700 hover:bg-pink-700 text-white font-bold py-2 px-4 mb-6 rounded" type="submit">Search</button>
+        <input type="text" name="proximity" id="proximity" class="ml-2 border-b-2" placeholder="Enter Proximity" style="display: none; padding: 1rem; font-size: 1rem;">
+        <button class="ml-2 bg-indigo-700 hover:bg-pink-700 text-white font-bold py-2 px-4 border-b-2 rounded" type="submit" style="padding: 1rem 1rem; font-size: 1rem; ">Search</button>
     </form>
+    <div id="suggestions_dropdown" class="dropdown" style="width: 455px;"></div>
+    
+    
     
     {% if search_query %}
     <p>You searched for: <strong>{{ search_query }}</strong></p>
@@ -106,6 +109,44 @@
             proximityInput.style.display = "none";
         }
     });
+
+    // Function to fetch suggested words from the backend
+    function fetchSuggestions() {
+        const searchQuery = document.getElementById("search_query_input").value;
+        // Make a request to the backend to fetch suggested words based on the current search query
+        fetch('/suggested?query=' + encodeURIComponent(searchQuery))
+        .then(response => response.json())
+        .then(data => {
+            const dropdown = document.getElementById("suggestions_dropdown");
+            dropdown.innerHTML = ""; // Clear previous suggestions
+            if (data.length > 0) {
+                data.forEach(word => {
+                    const option = document.createElement("div");
+                    option.className = "suggestion";
+                    option.textContent = word;
+                    option.addEventListener("click", function() {
+                        document.getElementById("search_query_input").value = word;
+                        dropdown.style.display = "none"; // Hide dropdown after selecting a suggestion
+                    });
+                    dropdown.appendChild(option);
+                });
+                dropdown.style.display = "block"; // Show the dropdown
+            } else {
+                dropdown.style.display = "none"; // Hide the dropdown if no suggestions
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching suggestions:', error);
+        });
+    }
+
+    document.getElementById("search_query_input").addEventListener("keyup", function(event) {
+    // Check if the pressed key is a space
+    if (event.key === " ") {
+        fetchSuggestions();
+    }
+});
+
 </script>
 
 {% endblock %}

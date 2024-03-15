@@ -120,6 +120,29 @@ def index():
     # Render the index page template
     return render_template('search.html', username=username, search_query=search_query, search_type=search_type, type=type, ranking=ranking, prox=prox, search_results=search_results, error=error_message, total_pages=total_pages, current_page=current_page, has_prev=has_prev, has_next=has_next, prev_page=prev_page, next_page=next_page, api_count_info=api_count_info)
 
+@app.route('/suggested', methods=['GET'])
+def get_recommendations():
+
+    query = request.args.get('query')
+    # Call your recommendation generation function here
+    # Replace 'recommend_words' with your actual recommendation function
+    params = {'query': query}  # Adjust common parameters as needed
+    api_url = 'http://34.82.129.217:5000/suggested'
+    response = requests.get(api_url, params=params)
+
+    if response.status_code == 200:
+        # Parse the JSON response
+        data = response.json()
+        suggestions = data[0]  
+    else:
+        query = request.args.get('query')
+        # Dummy suggestions
+        suggestions = []
+    return (suggestions)
+
+
+
+
 
 @app.route('/song_details/<id>')
 def song_details(id):
